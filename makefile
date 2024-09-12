@@ -3,9 +3,14 @@ BINS = typing clean
 
 all:$(BINS)
 
-typing:
+build:
 	if [ ! -d build ]; then mkdir build; fi
-	$(CC) src/typing.c -o build/typing.exe 
+
+screen:
+	$(CC) -c src/screen.c -o build/screen.o
+
+typing: build screen
+	$(CC) build/screen.o src/typing.c -o build/typing.exe
 
 clean:
 	rm build/*.o
