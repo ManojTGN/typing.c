@@ -1,4 +1,5 @@
 #include "screen.h"
+#include "text.h"
 
 Screen* SCREEN = NULL;
 
@@ -38,19 +39,26 @@ void renderScreen(){
         SCREEN->isBorderRendered = true;
     }
 
-    if(!SCREEN->isInitalTextRendered){
+    Text* currentText = getCurrentText();
+    if(currentText!= NULL && !currentText->isRendered){
+        SCREEN->cursor = (COORD){
+            (SCREEN->size.X / 2) - (currentText->size/2),
+            SCREEN->size.Y / 2
+        };
+        currentText->renderedAt = SCREEN->cursor;
 
+        SetConsoleCursorPosition(SCREEN->hConsole,SCREEN->cursor);
+        printf("%s",currentText->content);
+        SCREEN->cursor.X -= currentText->size;
+        SetConsoleCursorPosition(SCREEN->hConsole,SCREEN->cursor);
+
+        currentText->isRendered = true;
     }
 
-}
-
-void renderHandler(){
-    if(isScreenResized()){
-        initScreen(true);
-        return;
+    if(currentText != NULL){
+        SCREEN->cursor.X = currentText->renderedAt.X + currentText->typistAt;
+        SetConsoleCursorPosition(SCREEN->hConsole,SCREEN->cursor);
     }
-
-    renderScreen();
 }
 
 bool isScreenResized(){
@@ -64,4 +72,6 @@ bool isScreenResized(){
         SCREEN->size.Y == csbi.srWindow.Bottom - csbi.srWindow.Top + 1)
     );
 }
+
+
 

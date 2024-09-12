@@ -19,10 +19,8 @@ typedef struct TypingScreen {
 } Screen;
 
 void initScreen(bool reinit);
-
 void renderScreen();
-void renderHandler();
-
 bool isScreenResized();
+void setRelativeCursorPos(int8_t x, int8_t y);
 
 #endif /* SCREEN_H */
